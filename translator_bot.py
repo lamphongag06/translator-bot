@@ -1,14 +1,19 @@
-from flask import Flask
-import threading
 import asyncio
+from fastapi import FastAPI
+import uvicorn
+from threading import Thread
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 from deep_translator import GoogleTranslator
 
-# Thay TOKEN bot của bạn vào đây
 TOKEN = "8151098705:AAGKgRPB7bO-4wP-uhFypDaCu5W9kDdmmqk"
 
-# Hàm khởi chạy bot Telegram
+app = FastAPI()
+
+@app.get("/")
+async def home():
+    return {"message": "Bot is alive!"}
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('Xin chào! Gửi tôi 1 đoạn tiếng nước ngoài, tôi sẽ dịch sang tiếng Việt!')
 
@@ -17,24 +22,18 @@ async def translate_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     translated = GoogleTranslator(source='auto', target='vi').translate(text)
     await update.message.reply_text(translated)
 
-def run_bot():
-    # Cực kỳ quan trọng: tạo event loop mới cho thread
-    asyncio.set_event_loop(asyncio.new_event_loop())
+async def run_bot():
+    app_bot = ApplicationBuilder().token(TOKEN).build()
+    app_bot.add_handler(CommandHandler('start', start))
+    app_bot.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, translate_message))
 
-    app = ApplicationBuilder().token(TOKEN).build()
-    app.add_handler(CommandHandler('start', start))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, translate_message))
-    app.run_polling()
+    await app_bot.run_polling()
 
-# Flask server để giữ cổng 8080 cho Render
-server = Flask('')
-
-@server.route('/')
-def home():
-    return "Bot is alive!"
+def start_fastapi():
+    uvicorn.run(app, host="0.0.0.0", port=8080)
 
 if __name__ == "__main__":
-    # Chạy bot Telegram trên thread phụ
-    threading.Thread(target=run_bot).start()
-    # Flask giữ main thread để Render thấy PORT 8080
-    server.run(host='0.0.0.0', port=8080)
+    # chạy web server FastAPI trên thread phụ
+    Thread(target=start_fastapi).start()
+    # chạy bot telegram trên main event loop
+    asyncio.run(run_bot())
