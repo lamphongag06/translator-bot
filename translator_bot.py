@@ -5,7 +5,7 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 from deep_translator import GoogleTranslator
 
-TOKEN = "8151098705:AAGKgRPB7bO-4wP-uhFypDaCu5W9kDdmmqk"
+TOKEN = "8151098705:AAH3SRpc4AbU8EBnP58We_YOdPA94qvyywc"
 
 app = FastAPI()
 
