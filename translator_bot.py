@@ -1,8 +1,9 @@
+from flask import Flask
+import threading
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 from deep_translator import GoogleTranslator
 
-# Dán TOKEN bot của bạn vào đây
 TOKEN = "8151098705:AAGKgRPB7bO-4wP-uhFypDaCu5W9kDdmmqk"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -13,14 +14,18 @@ async def translate_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     translated = GoogleTranslator(source='auto', target='vi').translate(text)
     await update.message.reply_text(translated)
 
-def main():
+def run_bot():
     app = ApplicationBuilder().token(TOKEN).build()
-
     app.add_handler(CommandHandler('start', start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, translate_message))
-
-    print("Bot is running...")  # Thêm dòng này để báo bot đã chạy
     app.run_polling()
 
-if __name__ == '__main__':
-    main()
+server = Flask('')
+
+@server.route('/')
+def home():
+    return "Bot is alive!"
+
+if __name__ == "__main__":
+    threading.Thread(target=run_bot).start()
+    server.run(host='0.0.0.0', port=8080)
