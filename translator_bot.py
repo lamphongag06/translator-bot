@@ -1,7 +1,6 @@
 import asyncio
 from fastapi import FastAPI
 import uvicorn
-from threading import Thread
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 from deep_translator import GoogleTranslator
@@ -26,14 +25,11 @@ async def run_bot():
     app_bot = ApplicationBuilder().token(TOKEN).build()
     app_bot.add_handler(CommandHandler('start', start))
     app_bot.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, translate_message))
-
     await app_bot.run_polling()
 
-def start_fastapi():
-    uvicorn.run(app, host="0.0.0.0", port=8080)
+@app.on_event("startup")
+async def startup_event():
+    asyncio.create_task(run_bot())
 
 if __name__ == "__main__":
-    # chạy web server FastAPI trên thread phụ
-    Thread(target=start_fastapi).start()
-    # chạy bot telegram trên main event loop
-    asyncio.run(run_bot())
+    uvicorn.run(app, host="0.0.0.0", port=8080)
