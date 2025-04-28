@@ -1,4 +1,8 @@
-python-telegram-bot
-deep-translator
+
+python-telegram-bot==22.0
 fastapi
 uvicorn
+deep-translator
+pytesseract
+Pillow
+aiohttp
