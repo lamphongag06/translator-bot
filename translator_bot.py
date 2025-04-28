@@ -11,7 +11,7 @@ import aiohttp
 import io
 
 # Telegram bot token
-TELEGRAM_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"
+TELEGRAM_TOKEN = "8151098705:AAH3SRpc4AbU8EBnP58We_YOdPA94qvyywc"
 
 app = FastAPI()
 bot_app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
