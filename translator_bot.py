@@ -66,7 +66,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     if message.photo:
         caption = message.caption or ""
         translated_caption = translate_text(caption) if caption else ""
-        await message.reply_text(f"Dịch chú thích:
+        await message.reply_text(f"Dịch chú thích: {translated_caption}")
 {translated_caption}" if translated_caption else "Ảnh không có chú thích.")
 
         # Try OCR to extract text from image
