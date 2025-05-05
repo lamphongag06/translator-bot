@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: dich-telegram-bot
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.py
+    envVars:
+      - key: BOT_TOKEN
+        value: 7574715872:AAEZ4b7cRadrisYuT8IZs2t7sWRwWChVIas
+      - key: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/secrets/gcp-credentials.json
+    secrets:
+      - name: gcp-credentials
+        fileName: gcp-credentials.json

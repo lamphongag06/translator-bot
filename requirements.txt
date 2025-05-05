@@ -1,0 +1,2 @@
+python-telegram-bot==20.6
+google-cloud-translate==3.12.0
