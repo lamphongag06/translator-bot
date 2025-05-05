@@ -1,0 +1,6 @@
+python-telegram-bot==22.0
+deep-translator==1.11.4
+pillow
+pytesseract
+fastapi
+uvicorn
